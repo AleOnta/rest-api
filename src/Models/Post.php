@@ -114,5 +114,6 @@ class Post
                 default => null
             };
         }
+        return $updates;
     }
 }
