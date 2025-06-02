@@ -14,6 +14,7 @@ class User
     protected string $password;
     protected string $createdAt;
     protected string $updatedAt;
+    protected array $updates;
 
     protected function __construct(?int $id, string $email, string $username, string $password, string $createdAt, string $updatedAt)
     {
@@ -23,6 +24,7 @@ class User
         $this->password = $password;
         $this->createdAt = $createdAt;
         $this->updatedAt = $updatedAt;
+        $this->updates = [];
     }
 
     public static function new(string $email, string $username, string $password)
@@ -82,15 +84,37 @@ class User
     public function setEmail(string $email)
     {
         $this->email = $email;
+        if (!in_array('email', $this->updates)) $this->updates[] = 'email';
     }
 
     public function setUsername(string $username)
     {
         $this->username = $username;
+        if (!in_array('username', $this->updates)) $this->updates[] = 'username';
     }
 
     public function setPassword(string $password)
     {
         $this->password = $password;
+        if (!in_array('password', $this->updates)) $this->updates[] = 'password';
+    }
+
+    public function hasUpdates()
+    {
+        return count($this->updates);
+    }
+
+    public function getUpdates()
+    {
+        $updates = [];
+        foreach ($this->updates as $key) {
+            $updates[$key] = match ($key) {
+                'email' => $this->getEmail(),
+                'username' => $this->getUsername(),
+                'password' => $this->getPassword(),
+                default => false
+            };
+        }
+        return $updates;
     }
 }
