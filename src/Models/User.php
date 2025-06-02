@@ -117,4 +117,13 @@ class User
         }
         return $updates;
     }
+
+    public function toArray()
+    {
+        return [
+            'email' => $this->getEmail(),
+            'username' => $this->getUsername(),
+            'created' => $this->getCreatedAt()
+        ];
+    }
 }
