@@ -13,8 +13,9 @@ class Post
     protected string $content;
     protected string $createdAt;
     protected string $updatedAt;
+    protected array $updates;
 
-    protected function __construct(?int $id, int $userId, string $title, string $content, string $createdAt, string $updatedAt)
+    protected function __construct(?int $id, int $userId, string $title, string $content, string $createdAt, string $updatedAt, $updates = [])
     {
         $this->id = $id;
         $this->userId = $userId;
@@ -22,6 +23,7 @@ class Post
         $this->content = $content;
         $this->createdAt = $createdAt;
         $this->updatedAt = $updatedAt;
+        $this->updates = [];
     }
 
     public static function new(int $userId, string $title, string $content)
@@ -81,15 +83,36 @@ class Post
     public function setUserId(int $userId)
     {
         $this->userId = $userId;
+        if (!in_array('user_id', $this->updates)) $this->updates[] = 'user_id';
     }
 
     public function setTitle(string $title)
     {
         $this->title = $title;
+        if (!in_array('title', $this->updates)) $this->updates[] = 'title';
     }
 
     public function setContent(string $content)
     {
         $this->content = $content;
+        if (!in_array('content', $this->updates)) $this->updates[] = 'content';
+    }
+
+    public function hasUpdates()
+    {
+        return count($this->updates);
+    }
+
+    public function getUpdates()
+    {
+        $updates = [];
+        foreach ($this->updates as $key) {
+            $updates[$key] = match ($key) {
+                'user_id' => $this->getUserId(),
+                'title' => $this->getTitle(),
+                'content' => $this->getContent(),
+                default => null
+            };
+        }
     }
 }
