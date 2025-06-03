@@ -14,16 +14,16 @@ class Router
         $this->routes = [];
         $this->groupPrefix = "";
         $this->defaultRoute = [
-            'uri' => '/bad-request',
-            'controller' => 'RootController',
-            'action' => 'handleBadRequests'
+            '/bad-request',
+            'RootController',
+            'handleBadRequests'
         ];
     }
 
     private function addRoute(string $uri, string $method, string $controller, string $action)
     {
         $uri = $this->groupPrefix . $uri;
-        $route = ['uri' => $uri, 'controller' => $controller, 'action' => $action];
+        $route = [$uri, $controller, $action];
         $this->routes[$method][] = $route;
     }
 
@@ -65,21 +65,33 @@ class Router
         $uri = $_SERVER['REQUEST_URI'];
         $method = $_SERVER['REQUEST_METHOD'];
         foreach ($this->routes[$method] as $route) {
-            $pattern = preg_replace('~\{[a-zA-Z_]+\}~', '(\d+)', $route['uri']);
+            $pattern = preg_replace('~\{[a-zA-Z_]+\}~', '(\d+)', $route[0]);
             $pattern = "#^{$pattern}$#";
 
             if (preg_match($pattern, $uri, $matches)) {
                 array_shift($matches);
                 $this->dispatch($route, $matches);
+                exit;
             }
         }
+
+        # not found
+        $this->handleNotFound($uri);
     }
 
     private function dispatch(array $route, array $params)
     {
-        $controller = new $route['controller']();
-        $action = $route['action'];
+        [$uri, $class, $method] = $route;
+        $controller = new $class();
+        $action = $method;
         $controller->$action(...$params);
+    }
+
+    private function handleNotFound($uri)
+    {
+        http_response_code(404);
+        echo json_encode(['error' => 'not found', 'message' => "URL '{$uri}' doesn't match any of our API routes."]);
+        exit;
     }
 
     private function debugRoute($route, $params = [])
