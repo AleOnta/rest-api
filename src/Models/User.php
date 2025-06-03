@@ -95,7 +95,7 @@ class User
 
     public function setPassword(string $password)
     {
-        $this->password = $password;
+        $this->password = password_hash($password, PASSWORD_DEFAULT);
         if (!in_array('password', $this->updates)) $this->updates[] = 'password';
     }
 
