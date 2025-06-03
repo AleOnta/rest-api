@@ -30,9 +30,9 @@ EOS;
 
 $seedUsers = <<<EOS
 INSERT INTO users (email,username,password) 
-VALUES('john.doe@example.com','johndoe','abcd'),
-      ('jane.doe@example.com','janedoe','efgh'),
-      ('david.wright@example.com','davidwr','hilm')
+VALUES('john.doe@example.com','johndoe','\$2y\$12\$ilMwIDJ0NjfjHPxgGLmRKuYqvpskKw3aUJLTw9eSS9a9jpzrxp09C'),
+      ('jane.doe@example.com','janedoe','\$2y\$12\$rfUyfSC9PzyQ6remIr7AauvoXF5Kxv2/O3C1hHLT5HstyuED6gqPa'),
+      ('david.wright@example.com','davidwr','\$2y\$12\$MSE6SZePvJ7dzrfpgC./6e1koqyf4wGQZgnos3OU3rIcmeHOr8Urm')
 EOS;
 
 $seedPosts = <<<EOS
