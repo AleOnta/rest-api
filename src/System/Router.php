@@ -7,17 +7,11 @@ class Router
 
     public array $routes;
     private string $groupPrefix;
-    private array $defaultRoute;
 
     public function __construct()
     {
         $this->routes = [];
         $this->groupPrefix = "";
-        $this->defaultRoute = [
-            '/bad-request',
-            'RootController',
-            'handleBadRequests'
-        ];
     }
 
     private function addRoute(string $uri, string $method, string $controller, string $action)
