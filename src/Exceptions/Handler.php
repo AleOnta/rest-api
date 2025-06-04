@@ -2,6 +2,7 @@
 
 use Src\Exceptions\AlreadyExistsException;
 use Src\Exceptions\AuthenticationException;
+use Src\Exceptions\AuthorizationException;
 use Src\Exceptions\ValidationException;
 
 return function (Throwable $e) {
@@ -26,8 +27,9 @@ return function (Throwable $e) {
             $data['errors'] = $e->getErrors();
             break;
 
-
+        # FAILED AUTHORIZATION
         # INVALID AUTHENTICATION
+        case $e instanceof AuthorizationException;
         case $e instanceof AuthenticationException:
             $data['code'] = 401;
             $data['message'] = $e->getMessage();
