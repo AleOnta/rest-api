@@ -1,6 +1,7 @@
 <?php
 
 use Src\Exceptions\AlreadyExistsException;
+use Src\Exceptions\AuthenticationException;
 use Src\Exceptions\ValidationException;
 
 return function (Throwable $e) {
@@ -23,6 +24,13 @@ return function (Throwable $e) {
             $data['code'] = 422;
             $data['message'] = $e->getMessage();
             $data['errors'] = $e->getErrors();
+            break;
+
+
+        # INVALID AUTHENTICATION
+        case $e instanceof AuthenticationException:
+            $data['code'] = 401;
+            $data['message'] = $e->getMessage();
             break;
 
         # DEF FALLBACK

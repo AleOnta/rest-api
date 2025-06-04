@@ -2,6 +2,7 @@
 
 namespace Src\Traits;
 
+use Src\Exceptions\AuthenticationException;
 use Src\Gateways\UserGateway;
 use Src\System\DB;
 
@@ -12,7 +13,7 @@ trait AuthenticatesRequest
     {
         # reject request if header is not set
         if (!isset($_SERVER['HTTP_AUTHORIZATION'])) {
-            $this->unauthorized();
+            throw new AuthenticationException('Unauthorized');
         }
 
         # extract the header
@@ -32,13 +33,6 @@ trait AuthenticatesRequest
         }
 
         # reject request due to invalid credentials
-        $this->unauthorized('Invalid credentials');
-    }
-
-    private function unauthorized(string $message = 'Unauthorized')
-    {
-        http_response_code(401);
-        echo json_encode(['error' => $message]);
-        exit;
+        throw new AuthenticationException('Invalid credentials');
     }
 }
