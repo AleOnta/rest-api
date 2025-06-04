@@ -58,14 +58,16 @@ class Router
     {
         $uri = $_SERVER['REQUEST_URI'];
         $method = $_SERVER['REQUEST_METHOD'];
-        foreach ($this->routes[$method] as $route) {
-            $pattern = preg_replace('~\{[a-zA-Z_]+\}~', '(\d+)', $route[0]);
-            $pattern = "#^{$pattern}$#";
+        if (isset($this->routes[$method])) {
+            foreach ($this->routes[$method] as $route) {
+                $pattern = preg_replace('~\{[a-zA-Z_]+\}~', '(\d+)', $route[0]);
+                $pattern = "#^{$pattern}$#";
 
-            if (preg_match($pattern, $uri, $matches)) {
-                array_shift($matches);
-                $this->dispatch($route, $matches);
-                exit;
+                if (preg_match($pattern, $uri, $matches)) {
+                    array_shift($matches);
+                    $this->dispatch($route, $matches);
+                    exit;
+                }
             }
         }
 
