@@ -13,6 +13,7 @@ $router = new Router();
 $router->group('/users', function ($router) {
     $router->get('/me', UserController::class, 'index');
     $router->get('/{id}', UserController::class, 'show');
+    $router->patch('/{id}', UserController::class, 'update');
 });
 
 $router->match();

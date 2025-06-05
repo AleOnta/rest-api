@@ -121,6 +121,7 @@ class User
     public function toArray()
     {
         return [
+            'id' => $this->getId(),
             'email' => $this->getEmail(),
             'username' => $this->getUsername(),
             'created' => $this->getCreatedAt()
