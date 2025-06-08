@@ -24,7 +24,7 @@ class Controller
         $body = json_decode($raw, true);
         if ($body === null && !empty($_POST)) {
             $body = $_POST;
-        } else {
+        } elseif ($body === null) {
             parse_str($raw, $body);
         }
         # return bad request
