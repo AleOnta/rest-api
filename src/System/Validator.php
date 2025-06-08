@@ -26,6 +26,14 @@ class Validator
                     }
                     continue;
                 }
+
+                if (str_starts_with($rule, 'max')) {
+                    $max = explode(':', $rule)[1];
+                    if (strlen($value) > $max) {
+                        $errors = self::setError($errors, $field, "Field {$field} is required to be shorter than {$max} characters");
+                    }
+                    continue;
+                }
             }
         }
         return $errors;
