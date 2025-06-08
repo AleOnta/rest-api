@@ -54,6 +54,26 @@ class Validator
                     }
                     continue;
                 }
+
+                if (str_starts_with($rule, 'lt')) {
+
+                    [$key, $lower] = explode(':', $rule);
+                    $conditional = $key === 'lte'
+                        ? $data[$field] <= $lower
+                        : $data[$field] < $lower;
+
+                    if (!$conditional) {
+
+                        $errors = self::setError(
+                            $errors,
+                            $field,
+                            $key === 'lte'
+                                ? "Field {$field} must be lower or equal than {$lower}"
+                                : "Field {$field} must be lower than {$lower}"
+                        );
+                    }
+                    continue;
+                }
             }
         }
         return $errors;
