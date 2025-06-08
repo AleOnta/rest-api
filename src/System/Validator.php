@@ -18,6 +18,14 @@ class Validator
                     }
                     continue;
                 }
+
+                if (str_starts_with($rule, 'min')) {
+                    $min = explode(':', $rule)[1];
+                    if (strlen($value) < $min) {
+                        $errors = self::setError($errors, $field, "Field {$field} is required to be longer than {$min} characters");
+                    }
+                    continue;
+                }
             }
         }
         return $errors;
