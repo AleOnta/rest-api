@@ -12,8 +12,12 @@ class Validator
             $value = $data[$field] ?? null;
             foreach (explode('|', $ruleSet) as $rule) {
 
-                # validation logic will be here
-
+                if ($rule === 'required') {
+                    if ($value === null) {
+                        $errors = self::setError($errors, $field, "Field {$field} is required.");
+                    }
+                    continue;
+                }
             }
         }
         return $errors;
