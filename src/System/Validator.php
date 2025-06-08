@@ -34,6 +34,26 @@ class Validator
                     }
                     continue;
                 }
+
+                if (str_starts_with($rule, 'gt')) {
+
+                    [$key, $greater] = explode(':', $rule);
+                    $conditional = $key === 'gte'
+                        ? $data[$field] >= $greater
+                        : $data[$field] > $greater;
+
+                    if (!$conditional) {
+
+                        $errors = self::setError(
+                            $errors,
+                            $field,
+                            $key === 'gte'
+                                ? "Field {$field} must be greater or equal than {$greater}"
+                                : "Field {$field} must be greater than {$greater}"
+                        );
+                    }
+                    continue;
+                }
             }
         }
         return $errors;
