@@ -2,9 +2,12 @@
 
 namespace Src\System;
 
+use Src\Gateways\PostGateway;
+use Src\Gateways\UserGateway;
+use Src\Exceptions\InvalidParameterException;
+
 class Validator
 {
-
     public static function validate(array $data, array $rules)
     {
         $errors = [];
@@ -71,6 +74,31 @@ class Validator
                                 ? "Field {$field} must be lower or equal than {$lower}"
                                 : "Field {$field} must be lower than {$lower}"
                         );
+                    }
+                    continue;
+                }
+
+                if (str_starts_with($rule, 'unique')) {
+                    # retrieve database connection
+                    $connection = new DB()->getConnection();
+                    [$key, $table] = explode(':', $rule);
+                    # if the given table parameter isn't included in the existing table list then throw an exception
+                    if (!in_array($table, ['users'])) {
+                        throw new InvalidParameterException("Invalid parameter given to request validation. Table '{$table}' doesn't exists.");
+                    }
+                    # validate field / column parameter
+                    if (!in_array($field, ['username', 'email'])) {
+                        throw new InvalidParameterException("Invalid parameter given to request validation. Column '{$field}' cannot be queried on users table.");
+                    }
+                    # istantiate the table gateway
+                    $gateway = new UserGateway($connection);
+                    # check existence
+                    $validation = $field === 'email'
+                        ? $gateway->findByEmail($value)
+                        : $gateway->findByUsername($value);
+                    # set error if $user exists
+                    if ($validation->getId()) {
+                        $errors = self::setError($errors, $field, "Field {$field} cannot be used, try something else.");
                     }
                     continue;
                 }
