@@ -169,6 +169,25 @@ class UserGateway extends TableGateway
     }
 
     /**
+     * Retrieve and return a User model class by its email.
+     * @throws Exception <p>in case of failed db connection</p>
+     * @return User <p>returns the users instance or false if doesn't exists</p>
+     */
+    public function findByEmail(string $email)
+    {
+        try {
+            $stmt = $this->connection->prepare("SELECT * FROM {$this->table} WHERE email = :email;");
+            $stmt->bindParam('email', $email, \PDO::PARAM_STR);
+            if ($stmt->execute()) {
+                $user = $stmt->fetch(\PDO::FETCH_ASSOC);
+                return isset($user['id']) ? User::fromDB($user) : false;
+            }
+        } catch (\PDOException $e) {
+            throw new \Exception($e->getMessage());
+        }
+    }
+
+    /**
      * Returns all entities in the user table.
      * @throws Exception <p>in case of failed db connection</p>
      * @return array <p>returns an array of User instances</p>
