@@ -16,7 +16,11 @@ class Router
 
     private function addRoute(string $uri, string $method, string $controller, string $action)
     {
+
         $uri = $this->groupPrefix . $uri;
+        if (substr($uri, -1, 1) === '/' && strlen($uri) > 1) {
+            $uri = substr($uri, 0, strlen($uri) - 1);
+        }
         $route = [$uri, $controller, $action];
         $this->routes[$method][] = $route;
     }
