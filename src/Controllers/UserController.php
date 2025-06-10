@@ -2,10 +2,14 @@
 
 namespace Src\Controllers;
 
+use Src\Exceptions\ValidationException;
 use Src\Gateways\UserGateway;
+use Src\Models\User;
 use Src\System\DB;
 use Src\Traits\AuthenticatesRequest;
 use Src\Traits\AuthorizeRequest;
+use Src\Validation\Validator;
+use Src\Validation\Requests\Users\RegisterRequest;
 
 class UserController extends Controller
 {
@@ -53,5 +57,25 @@ class UserController extends Controller
         $user
             ? $this->response(['success' => true, 'data' => ['user' => $user->toArray()]])
             : $this->response(['success' => true, 'data' => []]);
+    }
+
+    public function register()
+    {
+        # extract the body of the request
+        $body = $this->bodyJSON();
+        # validate the request body based on the rules set for the user register request
+        $errors = Validator::validate($body, RegisterRequest::rules());
+        if (count($errors) > 0) {
+            throw new ValidationException('Invalid Request', $errors);
+        }
+        # create the new entity
+        $user = User::new($body['email'], $body['username'], $body['password']);
+        # persist it in the db
+        if ($this->userGateway->insert($user)) {
+            $this->response([
+                'success' => true,
+                'message' => 'Registration successful, include your username and password in a HTTP Authentication header in next requests to authenticate correctly (such as username:password)',
+            ], 201);
+        }
     }
 }
