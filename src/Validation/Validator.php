@@ -13,6 +13,7 @@ class Validator
         $errors = [];
         foreach ($rules as $field => $ruleSet) {
             $value = $data[$field] ?? null;
+            if ($value === '') $value = null;
             foreach (explode('|', $ruleSet) as $rule) {
 
                 if ($rule === 'required') {
@@ -84,6 +85,12 @@ class Validator
                             $errors = self::setError($errors, $field, 'The email address provided is invalid');
                         }
                         continue;
+                    }
+
+                    if ($rule === 'alphnum') {
+                        if (!ctype_alnum($value)) {
+                            $errors = self::setError($errors, $field, "Field {$field} can contain only alphanumeric characters");
+                        }
                     }
 
                     if (str_starts_with($rule, 'unique')) {
