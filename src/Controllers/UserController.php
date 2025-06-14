@@ -59,6 +59,11 @@ class UserController extends Controller
             : $this->response(['success' => true, 'data' => []]);
     }
 
+    /**
+     * Register a new user in the application.
+     * @return json <p>a json response confirming registration or the errors encountered in the process</p>
+     * @throws InvalidParameterException
+     */
     public function register()
     {
         # extract the body of the request
@@ -74,7 +79,7 @@ class UserController extends Controller
         if ($this->userGateway->insert($user)) {
             $this->response([
                 'success' => true,
-                'message' => 'Registration successful, include your username and password in a HTTP Authentication header in next requests to authenticate correctly (such as username:password)',
+                'message' => 'Registration successful, to authenticate in your next requests, include your credentials in a HTTP Authentication Header.',
             ], 201);
         }
     }
