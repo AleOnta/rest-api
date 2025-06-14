@@ -55,7 +55,7 @@ trait AuthorizeRequest
         }
         # bad ownership
         if (!$own) {
-            throw new AuthorizationException();
+            throw new AuthorizationException("You are not authorized to access the requested");
         }
         # allow request
         return true;
