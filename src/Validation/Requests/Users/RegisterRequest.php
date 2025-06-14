@@ -8,7 +8,7 @@ class RegisterRequest
     {
         return [
             'email' => 'required|email|unique:users',
-            'username' => 'required|alphnum|unique:users',
+            'username' => 'required|min:5|alphnum|unique:users',
             'password' => 'required|min:10'
         ];
     }
