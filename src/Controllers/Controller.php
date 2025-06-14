@@ -17,6 +17,11 @@ class Controller
         exit;
     }
 
+    /**
+     * Controller helper function that extract the body from the incoming request.
+     * It checks for content from POST, PUT & PATCH requests.
+     * @return array|json <p>the decoded body in an associative array or a json response indicating problems with the body of the request</p>
+     */
     protected function bodyJSON()
     {
         # read the request body
