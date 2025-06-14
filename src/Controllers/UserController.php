@@ -60,7 +60,7 @@ class UserController extends Controller
     }
 
     /**
-     * Register a new user in the application.
+     * Handles client create requests for user instances creation.
      * @return json <p>a json response confirming registration or the errors encountered in the process</p>
      * @throws InvalidParameterException
      */
@@ -79,6 +79,11 @@ class UserController extends Controller
         }
     }
 
+    /**
+     * Handles client edit requests for their own user instance.
+     * @return json <p>a json response confirming registration or the errors encountered in the process</p>
+     * @throws InvalidParameterException
+     */
     public function edit(int $id)
     {
         # check user authentication
