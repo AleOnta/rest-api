@@ -2,6 +2,9 @@
 
 namespace Src\Controllers;
 
+use Src\Exceptions\ValidationException;
+use Src\Validation\Validator;
+
 class Controller
 {
     /**
@@ -21,6 +24,7 @@ class Controller
      * Controller helper function that extract the body from the incoming request.
      * It checks for content from POST, PUT & PATCH requests.
      * @return array|json <p>the decoded body in an associative array or a json response indicating problems with the body of the request</p>
+     * @throws ValidationException
      */
     protected function bodyJSON()
     {
@@ -34,12 +38,29 @@ class Controller
         }
         # return bad request
         if (!$body) {
-            $this->response([
-                'error' => true,
-                'message' => 'Invalid request body'
-            ], 400);
+            throw new ValidationException('Invalid request body.', [0 => 'The request body cannot be empty']);
         }
         # return the decoded body
+        return $body;
+    }
+
+    /**
+     * Controller helper function that extract the request body from the incoming request and then validates it agains a 
+     * specific set of rules.
+     * @param rules <p>An associative array containing the rules that must be met foreach property expected to be present in the req. body</p>
+     * @return array <p>The validate request body</p>
+     * @throws ValidationException
+     */
+    protected function validateBody(array $rules)
+    {
+        # extract the request body
+        $body = $this->bodyJSON();
+        # validate the request body against the set of rules passed
+        $errors = Validator::validate($body, $rules);
+        if (count($errors) > 0) {
+            throw new ValidationException("Invalid request body.", $errors);
+        }
+        # return the validated body
         return $body;
     }
 }
