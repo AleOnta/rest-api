@@ -2,13 +2,13 @@
 
 namespace Src\Controllers;
 
-use Src\Exceptions\ValidationException;
-use Src\Gateways\UserGateway;
-use Src\Models\User;
 use Src\System\DB;
-use Src\Traits\AuthenticatesRequest;
+use Src\Models\User;
+use Src\Gateways\UserGateway;
 use Src\Traits\AuthorizeRequest;
-use Src\Validation\Validator;
+use Src\Traits\AuthenticatesRequest;
+use Src\Exceptions\AuthorizationException;
+use Src\Validation\Requests\Users\EditRequest;
 use Src\Validation\Requests\Users\RegisterRequest;
 
 class UserController extends Controller
@@ -67,12 +67,7 @@ class UserController extends Controller
     public function register()
     {
         # extract the body of the request
-        $body = $this->bodyJSON();
-        # validate the request body based on the rules set for the user register request
-        $errors = Validator::validate($body, RegisterRequest::rules());
-        if (count($errors) > 0) {
-            throw new ValidationException('Invalid Request', $errors);
-        }
+        $body = $this->validateBody(RegisterRequest::rules());
         # create the new entity
         $user = User::new($body['email'], $body['username'], $body['password']);
         # persist it in the db
@@ -82,5 +77,29 @@ class UserController extends Controller
                 'message' => 'Registration successful, to authenticate in your next requests, include your credentials in a HTTP Authentication Header.',
             ], 201);
         }
+    }
+
+    public function edit(int $id)
+    {
+        # check user authentication
+        $auth = $this->authenticate();
+        # check user authorization
+        $this->isOwner($id, $auth);
+        # extract the body of the request
+        $body = $this->validateBody(EditRequest::rules());
+        # retrieve the user instance
+        $user = $this->userGateway->findById($id);
+        # set new values into the user instance
+        if (isset($body['email']))
+            $user->setEmail($body['email']);
+        if (isset($body['username']))
+            $user->setUsername($body['username']);
+        # persist the updates
+        $update = $this->userGateway->update($user);
+        # return response to the client
+        $this->response([
+            'message' => 'User correctly updated.',
+            'data' => $this->userGateway->findById($id)->toArray()
+        ], 200);
     }
 }
