@@ -33,7 +33,7 @@ class User
             null,
             $email,
             $username,
-            $password,
+            password_hash($password, PASSWORD_DEFAULT),
             new DateTime('now', new DateTimeZone('UTC'))->format('Y-m-d H:i:s'),
             new DateTime('now', new DateTimeZone('UTC'))->format('Y-m-d H:i:s')
         );

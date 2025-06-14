@@ -61,7 +61,7 @@ class UserController extends Controller
 
     /**
      * Handles client create requests for user instances creation.
-     * @return json <p>a json response confirming registration or the errors encountered in the process</p>
+     * @return json <p>a json response confirming the creation or the errors encountered in the process</p>
      * @throws InvalidParameterException
      */
     public function register()
@@ -81,7 +81,7 @@ class UserController extends Controller
 
     /**
      * Handles client edit requests for their own user instance.
-     * @return json <p>a json response confirming registration or the errors encountered in the process</p>
+     * @return json <p>a json response confirming the update or the errors encountered in the process</p>
      * @throws InvalidParameterException
      */
     public function edit(int $id)
@@ -103,8 +103,29 @@ class UserController extends Controller
         $update = $this->userGateway->update($user);
         # return response to the client
         $this->response([
+            'success' => true,
             'message' => 'User correctly updated.',
             'data' => $this->userGateway->findById($id)->toArray()
         ], 200);
+    }
+
+    /**
+     * Handles client delete requests for their own user instance.
+     * @param int <p>The id of the instance to delete.</p>
+     * @return json <p>a json response confirming the deletion</p>
+     */
+    public function delete(int $id)
+    {
+        # check authentication
+        $auth = $this->authenticate();
+        # check authorization
+        $this->isOwner($id, $auth);
+        # delete the instance
+        $this->userGateway->delete($auth);
+        # return response to the client
+        $this->response([
+            'success' => true,
+            'message' => 'Resource correctly deleted.'
+        ]);
     }
 }

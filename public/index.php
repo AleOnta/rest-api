@@ -15,6 +15,7 @@ $router->group('/users', function ($router) {
     $router->get('/{id}', UserController::class, 'show');
     $router->post('/', UserController::class, 'register');
     $router->patch('/{id}', UserController::class, 'edit');
+    $router->delete('/{id}', UserController::class, 'delete');
 });
 
 $router->match();
