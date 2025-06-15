@@ -77,6 +77,7 @@ class UserController extends Controller
                 'message' => 'Registration successful, to authenticate in your next requests, include your credentials in a HTTP Authentication Header.',
             ], 201);
         }
+        $this->badRequest();
     }
 
     /**
@@ -102,11 +103,15 @@ class UserController extends Controller
         # persist the updates
         $update = $this->userGateway->update($user);
         # return response to the client
-        $this->response([
-            'success' => true,
-            'message' => 'User correctly updated.',
-            'data' => $this->userGateway->findById($id)->toArray()
-        ], 200);
+        if ($update) {
+            $this->response([
+                'success' => true,
+                'message' => 'User correctly updated.',
+                'data' => $this->userGateway->findById($id)->toArray()
+            ]);
+        }
+        # return error response
+        $this->badRequest('No user was updated, check the request body.');
     }
 
     /**
@@ -121,11 +126,13 @@ class UserController extends Controller
         # check authorization
         $this->isOwner($id, $auth);
         # delete the instance
-        $this->userGateway->delete($auth);
-        # return response to the client
-        $this->response([
-            'success' => true,
-            'message' => 'Resource correctly deleted.'
-        ]);
+        if ($this->userGateway->delete($auth)) {
+            # return response to the client
+            $this->response([
+                'success' => true,
+                'message' => 'Resource correctly deleted.'
+            ]);
+        }
+        $this->badRequest();
     }
 }
