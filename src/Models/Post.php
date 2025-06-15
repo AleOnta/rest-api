@@ -116,4 +116,15 @@ class Post
         }
         return $updates;
     }
+
+    public function toArray()
+    {
+        return [
+            'id' => $this->getId(),
+            'title' => $this->getTitle(),
+            'content' => $this->getContent(),
+            'created_at' => $this->getCreatedAt(),
+            'updated_at' => $this->getUpdatedAt()
+        ];
+    }
 }
