@@ -4,6 +4,7 @@ use Src\Exceptions\ValidationException;
 use Src\Exceptions\AlreadyExistsException;
 use Src\Exceptions\AuthorizationException;
 use Src\Exceptions\AuthenticationException;
+use Src\Exceptions\NotFoundException;
 
 return function (Throwable $e) {
 
@@ -13,6 +14,12 @@ return function (Throwable $e) {
     ];
 
     switch ($e) {
+
+        # NOT FOUND
+        case $e instanceof NotFoundException:
+            $data['code'] = 404;
+            $data['message'] = $e->getMessage();
+            break;
 
         # ALREADY EXISTS
         case $e instanceof AlreadyExistsException:
