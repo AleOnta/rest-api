@@ -196,7 +196,7 @@ class PostGateway extends TableGateway
             ]);
         }
         # 2. title - length
-        if (strlen($post->getTitle()) < 12) {
+        if (strlen($post->getTitle()) < 5) {
             throw new ValidationException('Some of the provided values are invalid.', [
                 'title' => 'the post title must be longer of 20 characters.'
             ]);
