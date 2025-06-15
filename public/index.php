@@ -2,6 +2,7 @@
 
 require "../bootstrap.php";
 
+use Src\Controllers\PostController;
 use Src\System\Router;
 use Src\Controllers\UserController;
 
@@ -16,6 +17,11 @@ $router->group('/users', function ($router) {
     $router->post('/', UserController::class, 'register');
     $router->patch('/{id}', UserController::class, 'edit');
     $router->delete('/{id}', UserController::class, 'delete');
+});
+
+# 2. /posts...
+$router->group('/posts', function ($router) {
+    $router->get('/', PostController::class, 'index');
 });
 
 $router->match();
