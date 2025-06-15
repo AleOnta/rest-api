@@ -7,6 +7,7 @@ use Src\Models\Post;
 use Src\System\DB;
 use Src\Traits\AuthenticatesRequest;
 use Src\Traits\AuthorizeRequest;
+use Src\Validation\Requests\Posts\CreateRequest;
 
 class PostController extends Controller
 {
@@ -21,6 +22,10 @@ class PostController extends Controller
         $this->postGateway = new PostGateway($db);
     }
 
+    /**
+     * Retrieve and return authenticated user posts or an empty array if user doesn't have any post.
+     * @return json
+     */
     public function index()
     {
         # check authentication
@@ -36,5 +41,23 @@ class PostController extends Controller
                     : []
             ]
         ], 200);
+    }
+
+
+    public function create()
+    {
+        # check authentication
+        $auth = $this->authenticate();
+        # validate the request body
+        $body = $this->validateBody(CreateRequest::rules());
+        # create the post entity
+        $post = Post::new($auth->getId(), $body['title'], $body['content']);
+        # persist the post in the db
+        if ($this->postGateway->insert($post)) {
+            $this->response([
+                'success' => true,
+                'message' => 'Post created successfully.'
+            ], 201);
+        }
     }
 }

@@ -22,6 +22,7 @@ $router->group('/users', function ($router) {
 # 2. /posts...
 $router->group('/posts', function ($router) {
     $router->get('/', PostController::class, 'index');
+    $router->post('/', PostController::class, 'create');
 });
 
 $router->match();
