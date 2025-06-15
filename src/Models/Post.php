@@ -4,6 +4,8 @@ namespace Src\Models;
 
 use DateTime;
 use DateTimeZone;
+use HTMLPurifier;
+use HTMLPurifier_Config;
 
 class Post
 {
@@ -32,7 +34,7 @@ class Post
             null,
             $userId,
             $title,
-            $content,
+            self::purifyContent($content),
             new DateTime('now', new DateTimeZone('UTC'))->format('Y-m-d H:i:s'),
             new DateTime('now', new DateTimeZone('UTC'))->format('Y-m-d H:i:s')
         );
@@ -94,7 +96,9 @@ class Post
 
     public function setContent(string $content)
     {
-        $this->content = $content;
+
+        # clear the HTML content received
+        $this->content = self::purifyContent($content);
         if (!in_array('content', $this->updates)) $this->updates[] = 'content';
     }
 
@@ -126,5 +130,17 @@ class Post
             'created_at' => $this->getCreatedAt(),
             'updated_at' => $this->getUpdatedAt()
         ];
+    }
+
+    public static function purifyContent(string $content)
+    {
+        # create default configuration for the HTML purifier instance
+        $config = HTMLPurifier_Config::createDefault();
+        # set allowed HTML tags in the configuration
+        $config->set('HTML.Allowed', 'div,h3,h4,h5,h6,p,strong,em,ul,ol,li,a[href],br');
+        # create the HTML purifier instance
+        $purifier = new HTMLPurifier($config);
+        # return the purified HTML
+        return $purifier->purify($content ?? '');
     }
 }
