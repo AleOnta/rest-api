@@ -2,8 +2,8 @@
 
 namespace Src\Controllers;
 
-use Src\Exceptions\ValidationException;
 use Src\Validation\Validator;
+use Src\Exceptions\ValidationException;
 
 class Controller
 {

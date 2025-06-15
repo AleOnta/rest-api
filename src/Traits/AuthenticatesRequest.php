@@ -2,9 +2,9 @@
 
 namespace Src\Traits;
 
-use Src\Exceptions\AuthenticationException;
-use Src\Gateways\UserGateway;
 use Src\System\DB;
+use Src\Gateways\UserGateway;
+use Src\Exceptions\AuthenticationException;
 
 trait AuthenticatesRequest
 {

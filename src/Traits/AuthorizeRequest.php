@@ -2,11 +2,9 @@
 
 namespace Src\Traits;
 
-use Src\Exceptions\AuthorizationException;
-use Src\Gateways\UserGateway;
 use Src\Models\Post;
 use Src\Models\User;
-use Src\System\DB;
+use Src\Exceptions\AuthorizationException;
 
 trait AuthorizeRequest
 {

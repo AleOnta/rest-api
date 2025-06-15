@@ -2,9 +2,8 @@
 
 namespace Src\Gateways;
 
-use Src\Exceptions\AlreadyExistsException;
-use Src\Exceptions\ValidationException;
 use Src\Models\Post;
+use Src\Exceptions\ValidationException;
 
 class PostGateway extends TableGateway
 {

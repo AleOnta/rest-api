@@ -1,9 +1,9 @@
 <?php
 
-use Src\Exceptions\AlreadyExistsException;
-use Src\Exceptions\AuthenticationException;
-use Src\Exceptions\AuthorizationException;
 use Src\Exceptions\ValidationException;
+use Src\Exceptions\AlreadyExistsException;
+use Src\Exceptions\AuthorizationException;
+use Src\Exceptions\AuthenticationException;
 
 return function (Throwable $e) {
 

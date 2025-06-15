@@ -2,9 +2,9 @@
 
 namespace Src\Gateways;
 
-use Src\Exceptions\AlreadyExistsException;
-use Src\Exceptions\ValidationException;
 use Src\Models\User;
+use Src\Exceptions\ValidationException;
+use Src\Exceptions\AlreadyExistsException;
 
 class UserGateway extends TableGateway
 {
