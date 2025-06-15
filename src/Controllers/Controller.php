@@ -21,6 +21,21 @@ class Controller
     }
 
     /**
+     * Helper function that return a Bad Request response to the client.
+     * @param string $message <p>Defaults at 'Bad request' but allows more specific information to be shared.</p>
+     * @return json <p>a json response</p>
+     */
+    protected function badRequest(string $message = 'Bad Request')
+    {
+        if ($message === 'Bad Request') {
+            $data = ['error' => true, 'message' => $message];
+        } else {
+            $data = ['error' => true, 'status' => 'Bad Request', 'message' => $message];
+        }
+        $this->response($data, 400);
+    }
+
+    /**
      * Controller helper function that extract the body from the incoming request.
      * It checks for content from POST, PUT & PATCH requests.
      * @return array|json <p>the decoded body in an associative array or a json response indicating problems with the body of the request</p>
