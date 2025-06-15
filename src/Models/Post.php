@@ -33,7 +33,7 @@ class Post
         return new self(
             null,
             $userId,
-            $title,
+            strip_tags($title),
             self::purifyContent($content),
             new DateTime('now', new DateTimeZone('UTC'))->format('Y-m-d H:i:s'),
             new DateTime('now', new DateTimeZone('UTC'))->format('Y-m-d H:i:s')
@@ -90,7 +90,7 @@ class Post
 
     public function setTitle(string $title)
     {
-        $this->title = $title;
+        $this->title = strip_tags($title);
         if (!in_array('title', $this->updates)) $this->updates[] = 'title';
     }
 
