@@ -93,6 +93,12 @@ class Validator
                         }
                     }
 
+                    if ($rule === 'spacesalphnum') {
+                        if (!ctype_alnum(str_replace(" ", "", $value))) {
+                            $errors = self::setError($errors, $field, "Field {$field} can contain only alphanumeric characters");
+                        }
+                    }
+
                     if (str_starts_with($rule, 'unique')) {
                         # retrieve database connection
                         $connection = new DB()->getConnection();
