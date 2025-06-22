@@ -23,6 +23,7 @@ $router->group('/users', function ($router) {
 $router->group('/posts', function ($router) {
     $router->get('/', PostController::class, 'index');
     $router->post('/', PostController::class, 'create');
+    $router->patch('/{id}', PostController::class, 'edit');
 });
 
 $router->match();

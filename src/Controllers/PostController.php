@@ -2,12 +2,14 @@
 
 namespace Src\Controllers;
 
+use Src\Exceptions\NotFoundException;
 use Src\Gateways\PostGateway;
 use Src\Models\Post;
 use Src\System\DB;
 use Src\Traits\AuthenticatesRequest;
 use Src\Traits\AuthorizeRequest;
 use Src\Validation\Requests\Posts\CreateRequest;
+use Src\Validation\Requests\Posts\EditRequest;
 
 class PostController extends Controller
 {
@@ -43,7 +45,10 @@ class PostController extends Controller
         ], 200);
     }
 
-
+    /**
+     * Handle the POST requests for the creation of posts entities for the authenticated user.
+     * @return json
+     */
     public function create()
     {
         # check authentication
@@ -59,5 +64,34 @@ class PostController extends Controller
                 'message' => 'Post created successfully.'
             ], 201);
         }
+    }
+
+    /**
+     * Handle the PATCH requests for the editing of posts entities for the authenticated user.
+     * @param int $id <p>the id of the post entity to edit.</p>
+     * @return json
+     */
+    public function edit(int $id)
+    {
+        # check authentication
+        $auth = $this->authenticate();
+        # validate the request body
+        $body = $this->validateBody(EditRequest::rules());
+        # retrieve the post by id
+        $post = $this->postGateway->findById($id);
+        if (!$post) {
+            throw new NotFoundException("Not found");
+        }
+        # check authorization
+        $this->isOwner($auth->getId(), $post);
+        # perform optional updates on the instance
+        if (isset($body['title']))
+            $post->setTitle($body['title']);
+        if (isset($body['content']))
+            $post->setContent($body['content']);
+        # persist the updates
+        $this->postGateway->update($post)
+            ? $this->response(['status' => true, 'message' => 'Post successfully updated.', 'data' => ['id' => $id]])
+            : $this->badRequest('No post was updated. Check the body of the request...');
     }
 }
