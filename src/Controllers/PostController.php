@@ -46,6 +46,31 @@ class PostController extends Controller
     }
 
     /**
+     * Handle the GET requests for the seeing a post entitiy owned by the authenticated user.
+     * @param int $id <p>the id of the post entity to return.</p>
+     * @return json
+     */
+    public function show(int $id)
+    {
+        # check authentication
+        $auth = $this->authenticate();
+        # retrieve the post by id
+        $post = $this->postGateway->findById($id);
+        if (!$post) {
+            throw new NotFoundException("Not found");
+        }
+        # check authorization
+        $this->isOwner($auth->getId(), $post);
+        # return the post to the client
+        $this->response([
+            'status' => 'success',
+            'data' => [
+                'post' => $post->toArray()
+            ]
+        ]);
+    }
+
+    /**
      * Handle the POST requests for the creation of posts entities for the authenticated user.
      * @return json
      */
