@@ -25,6 +25,7 @@ $router->group('/posts', function ($router) {
     $router->get('/{id}', PostController::class, 'show');
     $router->post('/', PostController::class, 'create');
     $router->patch('/{id}', PostController::class, 'edit');
+    $router->delete('/{id}', PostController::class, 'delete');
 });
 
 $router->match();

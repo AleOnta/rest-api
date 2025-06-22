@@ -119,4 +119,29 @@ class PostController extends Controller
             ? $this->response(['status' => true, 'message' => 'Post successfully updated.', 'data' => ['id' => $id]])
             : $this->badRequest('No post was updated. Check the body of the request...');
     }
+
+    /**
+     * Handle the DELETE requests for the deleting posts entities owned by the authenticated user.
+     * @param int $id <p>the id of the post entity to delete.</p>
+     * @return json
+     */
+    public function delete(int $id)
+    {
+        # check authentication
+        $auth = $this->authenticate();
+        # retrieve the post
+        $post = $this->postGateway->findById($id);
+        if (!$post) {
+            throw new NotFoundException("Not found");
+        }
+        # check authorization
+        $this->isOwner($auth->getId(), $post);
+        # delete the post
+        $this->postGateway->delete($post);
+        # return response to the client
+        $this->response([
+            'success' => 'true',
+            'message' => "Post with id {$id} successfully deleted."
+        ]);
+    }
 }
